@@ -6,178 +6,406 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Finance Tracker</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-   <link rel="stylesheet" href="https://jsdelivr.net">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap JavaScript -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        defer>
+    </script>
+
+    <!-- Application JavaScript -->
+    <script src="./script.js" defer></script>
+
+    <style>
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .summary-card {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .icon-box {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 1.3rem;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .section-card {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 576px) {
+            .action-buttons .btn {
+                flex: 1;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<div class="container-fluid py-3">
-    <h2 class="text-center">Personal Finance Tracker</h2>
-    <div id="alert-container" class="container mt-3"></div>
+<div class="container-fluid py-4 px-3 px-md-4 app-container">
 
-    <!-- Filter and Report Buttons -->
-    <div class="d-flex justify-content-center gap-3 m-3">
-        <button type="button" class="btn btn-primary w-50"
-                data-bs-toggle="collapse" data-bs-target="#filter-panel">
-            <i class="bi bi-funnel"></i> Filter
-        </button>
-        <button type="button" class="btn btn-success w-50"
-                onclick="generateReport()">
-            <i class="bi bi-file-earmark-bar-graph"></i> Report
-        </button>
-    </div>
+    <!-- Header -->
+    <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-wallet2 text-primary"></i>
+                Personal Finance Tracker
+            </h2>
+            <p class="text-muted mb-0">Manage your income and expenses</p>
+        </div>
+
+        <div class="d-flex gap-2 action-buttons">
+            <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-bs-toggle="collapse"
+                data-bs-target="#filter-panel"
+                aria-controls="filter-panel"
+                aria-expanded="false">
+                <i class="bi bi-funnel"></i> Filter
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-success"
+                id="report-button">
+                <i class="bi bi-file-earmark-bar-graph"></i> Report
+            </button>
+        </div>
+    </header>
+
+    <!-- Alerts -->
+    <div id="alert-container" aria-live="polite"></div>
 
     <!-- Filter Panel -->
     <div class="collapse mb-4" id="filter-panel">
-        <div class="card card-body">
-            <h5>Filter Transactions</h5>
-            <div class="row g-3">
-                <div class="col-md-3">
-                    <label for="filter-type" class="form-label">Type</label>
-                    <select id="filter-type" class="form-select">
-                        <option value="">All types</option>
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
-                    </select>
+        <div class="card section-card">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-funnel"></i> Filter Transactions
+                </h5>
+
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="filter-type" class="form-label">Type</label>
+                        <select id="filter-type" class="form-select">
+                            <option value="">All types</option>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="filter-category" class="form-label">Category</label>
+                        <select id="filter-category" class="form-select">
+                            <option value="">All categories</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Health">Health</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="filter-from" class="form-label">From Date</label>
+                        <input type="date" id="filter-from" class="form-control">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="filter-to" class="form-label">To Date</label>
+                        <input type="date" id="filter-to" class="form-control">
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label for="filter-category" class="form-label">Category</label>
-                    <select id="filter-category" class="form-select">
-                        <option value="">All categories</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Food">Food</option>
-                        <option value="Transport">Transport</option>
-                    </select>
+
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button type="button" id="apply-filter-button" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Apply Filter
+                    </button>
+
+                    <button type="button" id="reset-filter-button" class="btn btn-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                    </button>
                 </div>
-                <div class="col-md-3">
-                    <label for="filter-from" class="form-label">From Date</label>
-                    <input type="date" id="filter-from" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label for="filter-to" class="form-label">To Date</label>
-                    <input type="date" id="filter-to" class="form-control">
-                </div>
-            </div>
-            <div class="mt-3 d-flex gap-2">
-                <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filter</button>
-                <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
             </div>
         </div>
     </div>
 
     <!-- Report Panel -->
-    <div id="report-panel" class="card mb-4 d-none">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Transaction Report</h5>
-            <button type="button" class="btn-close" onclick="closeReport()" aria-label="Close"></button>
+    <div id="report-panel" class="card section-card mb-4 d-none">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-bar-chart-line text-success"></i>
+                Transaction Report
+            </h5>
+
+            <button
+                type="button"
+                id="close-report-button"
+                class="btn-close"
+                aria-label="Close report">
+            </button>
         </div>
+
         <div class="card-body">
+            <p id="report-period" class="text-muted small"></p>
+
             <div class="row g-3 text-center">
-                <div class="col-md-3">
+                <div class="col-6 col-lg-3">
                     <div class="border rounded p-3 h-100">
-                        Transactions: <strong id="report-count">0</strong>
+                        <i class="bi bi-receipt fs-4 text-primary"></i>
+                        <div class="text-muted small mt-2">Transactions</div>
+                        <strong id="report-count" class="fs-5">0</strong>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="border rounded p-3 h-100 text-success">
-                        Income: ₹<strong id="report-income">0.00</strong>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="border rounded p-3 h-100 text-danger">
-                        Expenses: ₹<strong id="report-expenses">0.00</strong>
-                    </div>
-                </div>
-                <div class="col-md-3">
+
+                <div class="col-6 col-lg-3">
                     <div class="border rounded p-3 h-100">
-                        Balance: ₹<strong id="report-balance">0.00</strong>
+                        <i class="bi bi-arrow-down-circle fs-4 text-success"></i>
+                        <div class="text-muted small mt-2">Income</div>
+                        <strong class="text-success">
+                            ₹<span id="report-income">0.00</span>
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="border rounded p-3 h-100">
+                        <i class="bi bi-arrow-up-circle fs-4 text-danger"></i>
+                        <div class="text-muted small mt-2">Expenses</div>
+                        <strong class="text-danger">
+                            ₹<span id="report-expenses">0.00</span>
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <div class="border rounded p-3 h-100">
+                        <i class="bi bi-wallet fs-4 text-primary"></i>
+                        <div class="text-muted small mt-2">Balance</div>
+                        <strong>₹<span id="report-balance">0.00</span></strong>
                     </div>
                 </div>
             </div>
 
-            <h6 class="mt-4">Category Breakdown</h6>
+            <h6 class="fw-bold mt-4">Category Breakdown</h6>
+
             <div class="table-responsive">
-                <table class="table table-bordered table-sm">
-                    <thead>
-                    <tr><th>Category</th><th>Income</th><th>Expenses</th></tr>
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Income</th>
+                        <th>Expenses</th>
+                    </tr>
                     </thead>
                     <tbody id="report-category-rows"></tbody>
                 </table>
             </div>
-            <button type="button" class="btn btn-outline-primary" onclick="downloadReportCsv()">
+
+            <button type="button" id="download-report-button" class="btn btn-outline-primary">
                 <i class="bi bi-download"></i> Download CSV Report
             </button>
         </div>
     </div>
 
-    <!-- Balance -->
-    <div class="m-3 text-center">
-        <div class="fw-bold m-3">Your Balance</div>
-        <div class="fw-bolder fs-3">₹<span id="balance">0.00</span></div>
-    </div>
-
-    <!-- Income and Expenses -->
-    <div class="row mx-auto">
-        <div class="col-6">
-            <div class="alert alert-success text-center fw-bold">
-                Income<br>₹<span id="income-amount">0.00</span>
+    <!-- Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card summary-card">
+                <div class="card-body text-center py-4">
+                    <div class="text-muted mb-2">
+                        <i class="bi bi-wallet2"></i> Your Balance
+                    </div>
+                    <h2 class="fw-bold mb-0">
+                        ₹<span id="balance">0.00</span>
+                    </h2>
+                </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="alert alert-danger text-center fw-bold">
-                Expenses<br>₹<span id="expenses-amount">0.00</span>
+
+        <div class="col-md-6">
+            <div class="card summary-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-success bg-opacity-10 text-success">
+                        <i class="bi bi-arrow-down-left-circle"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted">Total Income</div>
+                        <h4 class="fw-bold text-success mb-0">
+                            ₹<span id="income-amount">0.00</span>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card summary-card h-100">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="icon-box bg-danger bg-opacity-10 text-danger">
+                        <i class="bi bi-arrow-up-right-circle"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted">Total Expenses</div>
+                        <h4 class="fw-bold text-danger mb-0">
+                            ₹<span id="expenses-amount">0.00</span>
+                        </h4>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Transaction Form -->
-    <h4>Add Transaction</h4>
-    <form id="transaction-form" class="m-3">
-        <select class="form-select mb-3" id="trn-type" required>
-            <option value="">Select Type</option>
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-        </select>
+    <div class="card section-card mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0" id="form-heading">
+                <i class="bi bi-plus-circle text-primary"></i> Add Transaction
+            </h5>
+        </div>
 
-        <select class="form-select mb-3" id="trn-category" required>
-            <option value="">Select Category</option>
-            <option value="Salary">Salary</option>
-            <option value="Food">Food</option>
-            <option value="Transport">Transport</option>
-        </select>
+        <div class="card-body">
+            <form id="transaction-form">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="trn-type" class="form-label">Transaction Type</label>
+                        <select class="form-select" id="trn-type" required>
+                            <option value="">Select Type</option>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                        </select>
+                    </div>
 
-        <input class="form-control mb-3" type="number" id="trn-amount"
-               placeholder="Enter Amount" min="0.01" step="0.01" required>
+                    <div class="col-md-6">
+                        <label for="trn-category" class="form-label">Category</label>
+                        <select class="form-select" id="trn-category" required>
+                            <option value="">Select Category</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Health">Health</option>
+                            <option value="Education">Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
 
-        <input class="form-control mb-3" type="text" id="trn-description"
-               placeholder="Enter Description" maxlength="200" required>
+                    <div class="col-md-6">
+                        <label for="trn-amount" class="form-label">Amount (₹)</label>
+                        <input
+                            class="form-control"
+                            type="number"
+                            id="trn-amount"
+                            placeholder="Enter amount"
+                            min="0.01"
+                            max="999999999999"
+                            step="0.01"
+                            required>
+                    </div>
 
-        <input class="form-control mb-3" type="date" id="trn-date" required>
+                    <div class="col-md-6">
+                        <label for="trn-date" class="form-label">Date</label>
+                        <input type="date" id="trn-date" class="form-control" required>
+                    </div>
 
-        <button type="submit" id="add-button" class="btn btn-primary">Add Transaction</button>
-        <button type="button" class="btn btn-secondary" onclick="clearForm()">Cancel</button>
-    </form>
+                    <div class="col-12">
+                        <label for="trn-description" class="form-label">Description</label>
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="trn-description"
+                            placeholder="Enter description"
+                            maxlength="200"
+                            required>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" id="add-button" class="btn btn-primary">
+                        <i class="bi bi-plus-lg"></i> Add Transaction
+                    </button>
+
+                    <button type="button" id="cancel-button" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Transaction History -->
-    <h4>Transaction History</h4>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody id="transaction_history"></tbody>
-        </table>
+    <div class="card section-card">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <h5 class="fw-bold mb-0">
+                    <i class="bi bi-clock-history text-primary"></i>
+                    Transaction History
+                </h5>
+
+                <span class="badge bg-primary" id="transaction-count">0 transactions</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="transaction_history"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    <footer class="text-center text-muted small mt-4">
+        Personal Finance Tracker · Your transactions are stored in this browser.
+    </footer>
 </div>
-
-
 </body>
 </html>
